@@ -7,12 +7,42 @@
 //
 
 import UIKit
+import CoreData
 
 class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        var appDel:AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        var context:NSManagedObjectContext = appDel.managedObjectContext
+        
+        var newUser = NSEntityDescription.insertNewObjectForEntityForName("Users", inManagedObjectContext: context) as NSManagedObject
+        var results: [AnyObject]
+        
+        newUser.setValue("Paul", forKey: "username")
+        newUser.setValue("mybutt", forKey: "password")
+        
+        do {
+            try context.save()
+            
+        } catch {
+                print("error")
+        }
+        
+        var request = NSFetchRequest(entityName: "Users")
+        
+        request.returnsObjectsAsFaults = false
+        
+        do {
+            results = try context.executeFetchRequest(request)
+        } catch {
+            print("error")
+        }
+        
+        for result: AnyObject in results {
+            print(result)
+        }
     }
 
     override func didReceiveMemoryWarning() {
